@@ -92,8 +92,11 @@ int Currency::operator<(const Currency &rhs) const
 			map<string, Currency> Map;
 
 			Currency Obj;
-
-			Currency_Collection(){
+			
+			string string1, string2;
+			Currency_Collection &operator=(const Currency &rhs);
+			Currency_Collection()
+			{
 				//cout << "Currency constructor" << endl;
 
 				ifstream file( "con.txt", ios::in );
@@ -104,23 +107,42 @@ int Currency::operator<(const Currency &rhs) const
 				    {
 				        cerr << "Cant open " << endl;
 				    }
-				   
+				   cout << "Available Currencies and rate:\n";
 				    while( file >> part1 >> num1  )
 				    {
+				    	
 				        
 				        Obj.CountryCode = part1;
 				        Obj.USD_DollarAmount = num1;
+				        
 				        Map[part1] = Obj;
-				       // i++;
-
-				     //   cout<< "i: "<<i << endl;
+				        cout << part1 << " " << num1 << endl;
+				       
+					
+				      
 				    }
 
-				   // cout << "Part1: "<<part1 << "\n" << endl;
-				    //cout << "Num1: "<<num1 << "\n" << endl;
+				   
 
 				    file.close();
+				  
 
+			}
+			bool Exist(string search)
+			{
+				map<string, Currency>::iterator ii;
+				
+				 if(Map.find(search) == Map.end())
+				{
+					return false;
+				}
+				else
+				{
+				
+				return true;
+
+			 	}
+				
 			}
 			
 
@@ -129,7 +151,7 @@ int Currency::operator<(const Currency &rhs) const
 				map<string, Currency>::iterator ii;
 				if(Map.find(search) == Map.end())
 				{
-					return 123456789.987654321;
+					return 123456789.987654321; //i actually dont needs this any more
 				}
 				else
 				{
@@ -152,19 +174,7 @@ int Currency::operator<(const Currency &rhs) const
 			{
 
 
-/*
-				Obj.CountryCode = "GBP";
-				//Obj.Description = "European Dollar";
-				Obj.USD_DollarAmount = 0.75;
 
-				Map[1] = Obj;
-
-				Obj.CountryCode = "USD";
-				//Obj.Description = " American Dollars";
-				Obj.USD_DollarAmount = 1;
-
-				Map[0] = Obj;
-				*/
 			
 				ifstream file( "con.txt", ios::in );
 				    string part1;
@@ -192,16 +202,12 @@ int Currency::operator<(const Currency &rhs) const
 				    file.close();
 
 
-				
-/*
-				while (infile >> key >> value)
-				{
-				    Map[key] = value;
-				}
-*/
 
 
 			}
+		
+			// checks if currency exist if not return false
+			
 			void Dump()
 			{
 
@@ -209,6 +215,7 @@ int Currency::operator<(const Currency &rhs) const
 				for( map<string, Currency>::iterator ii=Map.begin(); ii!=Map.end(); ++ii)
 				   {
 				       cout << (*ii).first << ": " << (*ii).second << endl;
+				       
 				   }
 			
 		/*		
@@ -234,6 +241,8 @@ int Currency::operator<(const Currency &rhs) const
 			
 
 	};
+	
+
 
 
 
@@ -258,14 +267,16 @@ int Currency::operator<(const Currency &rhs) const
 
 			Money()
 			{
-				//value = 100;
-				//CurrentC = "USD";
+				value = 100;
+				CurrentC = "USD";
+				CurrentCountry = "USD";
 
 			}
 			Money(float valuez, string cc)
 			{
 				value = valuez;
 				CurrentC = cc;
+				CurrentCountry = cc;
 			}
 
 			void ADD(float amount){
@@ -281,6 +292,10 @@ int Currency::operator<(const Currency &rhs) const
 
 				cout << "Account balance: " << CurrentCountry << " "<< value << endl;
 			}
+			void DumpCurrencyList()
+			{
+				Denomination.Dump();
+			}
 			void ConvertTo(string z)
 			{	
 				float temp=0;
@@ -289,33 +304,39 @@ int Currency::operator<(const Currency &rhs) const
 				 temp = Denomination.Load(z);
 			
 			// assuming no errors  need to check for errors later 
-				 if(z != "USD" || "AUS" || "GPB")
-				 {
-				 		// error checking implement this
-				 }
+			if (Denomination.Exist(z)== true)
+			{
 
 				 if(CurrentCountry == "USD")
 				 {
 				 	value = value*temp;
 				 	CurrentCountry = z;
-
+				 //	CurrentC = z;
+					cout << "Conversion complete:\n";
 				 	//cout << CurrentCode << endl;
 
 				 }
 				 else 
 				 {
-				 	cout << "Converting: "<< CurrentC << " to: " << z << endl;
+				 	cout << "Converting: "<< CurrentCountry << " to: " << z << endl;
 
 				 	float temp2;
-				 	temp2 = (value/Denomination.Load(CurrentC))*Denomination.Load(z);
+				 	temp2 = (value/Denomination.Load(CurrentCountry))*Denomination.Load(z);
 				 	//cout << CurrentC << " " << value<< " -------------> " << z<<" "<< temp2 << endl;
+				 
 				 	value = temp2;
+				 	CurrentC = z;
+				 	CurrentCountry = z;
 				 	//cout << value << endl;
 
 				 }
 				
-
-				 
+				
+			}
+			else 
+			{
+				cout << " invalid country code please try again \n";
+			}
 			}
 
 	};
@@ -338,16 +359,58 @@ int Currency::operator<(const Currency &rhs) const
 			string PassWord; // will implement later but for now just leave as a reminder if security is needed
 
 			int operator<(const User &rhs) const;
-			/*
+			
 			User ()
 			{
+				/*
 				UserName = "Keith";
 				Balance.value = 100;
 				Balance.CurrentCountry = "USD";
-			}
-			*/
-			User &operator=(const User &rhs);
+				*/
+				
+				ifstream file( "UserCollection.txt", ios::in );
+				    string userName;
+				    float cash;
+				    string currencycode;
+				    
+				    if( !file )
+				    {
+				        cerr << "Cant open " << endl;
+				    }
+				    int i = 0;
+				    while( file >> userName >> cash >> currencycode )
+				    {
+				        
+				        UserName = userName;
+				        Balance.value = cash;
+				        Balance.CurrentCountry = currencycode;
+				       // i++;
 
+				     //   cout<< "i: "<<i << endl;
+				    }
+
+				   // cout << "Part1: "<<part1 << "\n" << endl;
+				    //cout << "Num1: "<<num1 << "\n" << endl;
+
+				    file.close();
+			}
+			// upon program termination this will save and overwrite user data with current data. 
+			void SaveUser ()
+			{
+				ofstream file("UserCollection.txt");
+				if(!file)
+				{
+					cerr << "Cant open" << endl;
+					
+				}
+				else
+				{
+					file << UserName << " "<< Balance.value <<" " <<Balance.CurrentCountry;
+				}
+			}
+			
+			User &operator=(const User &rhs);
+		/* // Could not set up a User_Collection class
 			void SetupUser(string name, float balance, string countrycode )
 			{
 				//cout << "made it here to setupuser"<< endl; 
@@ -361,6 +424,7 @@ int Currency::operator<(const Currency &rhs) const
 			//	cout << "exiting setupuser end of \n"<< endl; 
 
 			}
+			*/
 
 			void Display()
 			{
@@ -380,6 +444,10 @@ int Currency::operator<(const Currency &rhs) const
 			void ConvertingTime(string countrycode)
 			{
 				Balance.ConvertTo(countrycode);
+			}
+			void DumpList()
+			{
+				Balance.DumpCurrencyList();
 			}
 
 
@@ -405,100 +473,16 @@ int User::operator<(const User &rhs) const
 }
 
 
-	// this class will house and keep track of all the users
-	class User_Collection
-	{
-		public:
-
-			map<int, User> UMap;
-
-			User Uobject;
-
-			User_Collection()
-			{
-				//cout << "User_Collection constructor" << endl;
-
-				ifstream file( "UserCollection.txt", ios::in );
-				    string getName;
-				    float getBalance;
-				    string getCountryCode;
-				   //cout << "made it here 1"<< endl; 
-				    if( !file )
-				    {
-				        cerr << "Cant open " << endl;
-				    }
-				   int i = 0;
-				   //cout << "made it here 2"<< endl; 
-				    while( file >> getName >> getBalance >> getCountryCode  )
-				    {
-				       // cout << "made it here in the loop"<< endl; 
-
-				        Uobject.SetupUser(getName,getBalance,getCountryCode);
-				       // cout << "trying to save map"<< endl; 
-
-				        UMap[i] = Uobject;
-
-						//cout << getName << " " << getBalance << " " << getCountryCode << "\n\n" << endl;
-				       i++;
 
 
-				       
-				    }
-				    
-				   // cout << "made it here 3"<< endl; 
 
-				   // cout << "Part1: "<<part1 << "\n" << endl;
-				    //cout << "Num1: "<<num1 << "\n" << endl;
-
-				    file.close();
-
-			}
-			void Dump()// total dump of all users and account information 
-			{
-				cout << "Displaying all user accounts \n\n";
-				for(int x=0; x < UMap.size(); x++)
-				{
-					Uobject = UMap[x];
-					cout << x +1<< ". ";
-					Uobject.Display();
-				}
-			
-			}
-			void view ()
-			{
-				Uobject.Display();
-			}
-			void ConvertMoneyTo(string c)
-			{
-				Uobject.ConvertingTime(c);
-			}
-			void FindAccount(int x)
-			{				
-				Uobject = UMap[x-1]; 
-			}
-			void AddMoney(int v)
-			{
-				Uobject.add(v);
-			}
-
-	};
-
-void ShowMenu() {
-cout << "What would you like to do?\n";
-		cout << "1 - Swing Sword\n";
-		cout << "2 - Stab with Sword\n";
-		cout << "3 - Dodge enemy attack\n";
-		cout << "4 - Kick enemy\n";
-        cout << "5 - Quit\n\n";
-		cout << "Your move: " << endl; //flush buffer with endl occasionally
-
-}
 
 
 
 
 int main()
 {
+
 
 /*
 	Currency_Collection A;
@@ -513,8 +497,13 @@ int main()
 
 	big.View();
 	big.ConvertTo("GPB");
-	big.ConvertTo("AUS");
 	big.View();
+	big.ConvertTo("AUS");
+	
+	big.View();
+	big.ConvertTo("USD");
+	big.View();
+//	big.DumpCurrencyList();
 */
 /*
 	User Keith;
@@ -523,40 +512,76 @@ int main()
 	Keith.ConvertingTime("GPB");
 	Keith.Display();
 	*/
+	
 
-User_Collection Bank;
+User Keith;
 
 	int choice;
+	string denom;
 bool gameOn = true;
 while (gameOn != false)
 {
 cout << "*******************************\n";
-cout << " 1 - View account.\n";
-cout << " 2 - Story.\n";
-cout << " 3 - Help.\n";
-cout << " 4 - Exit.\n";
+cout << " 1 - View accounts.\n";
+cout << " 2 - Add Money.\n";
+cout << " 3 - Sub Money.\n";
+cout << " 4 - Convert to another currency \n";
+cout << " 5 - Exit.\n";
 cout << " Enter your choice and press return: ";
 
 cin >> choice;
 
-switch (1)
+switch (choice)
 {
 case 1:
-Bank.Dump();
+cout << "*******************************\n";
+Keith.Display();
 // rest of code here
 break;
 case 2:
-cout << "Story so far....\n";
+cout << "*******************************\n";
+cout << "NOTE: You can only add money that matches accounts Country Code \n";
+cout << "Enter amount of money to add:";
+int m;
+cin >> m;
+Keith.add(m);
+
+
+
 // rest of code here
 break;
 case 3:
-cout << "Ahahah, you really think I will help you?\n";
+cout << "*******************************\n";
+cout << "NOTE: You can only sub money that matches accounts Country Code \n";
+
+//Keith.DumpList();
+
+cout << "Enter amount of money to sub:";
+
+cin >> m;
+Keith.sub(m);
+
 // rest of code here
 break;
 case 4:
+cout << "*******************************\n";
+
+cout << "Enter Country Code of the currency you want:";
+
+cin >> denom;
+Keith.ConvertingTime(denom);
+
+cout << "Conversion complete!\n";
+Keith.Display();
+
+break;
+
+case 5:
 cout << "End of Program.\n";
+Keith.SaveUser();
 gameOn = false;
 break;
+
 default:
 cout << "Not a Valid Choice. \n";
 cout << "Choose again.\n";
