@@ -312,7 +312,7 @@ int Currency::operator<(const Currency &rhs) const
 				 	value = value*temp;
 				 	CurrentCountry = z;
 				 //	CurrentC = z;
-					cout << "Conversion complete:\n";
+					//cout << "Conversion complete:\n";
 				 	//cout << CurrentCode << endl;
 
 				 }
@@ -514,80 +514,83 @@ int main()
 	*/
 	
 
-User Keith;
+User UserObject;
 
 	int choice;
 	string denom;
 bool gameOn = true;
 while (gameOn != false)
 {
-cout << "*******************************\n";
-cout << " 1 - View accounts.\n";
-cout << " 2 - Add Money.\n";
-cout << " 3 - Sub Money.\n";
-cout << " 4 - Convert to another currency \n";
-cout << " 5 - Exit.\n";
-cout << " Enter your choice and press return: ";
+		cout << "*******************************\n";
+		cout << " 1 - View accounts.\n";
+		cout << " 2 - Add Money.\n";
+		cout << " 3 - Sub Money.\n";
+		cout << " 4 - Convert to another currency \n";
+		cout << " 5 - Exit.\n";
+		cout << " Enter your choice and press return: ";
+		
+		cin >> choice;
 
-cin >> choice;
-
-switch (choice)
-{
-case 1:
-cout << "*******************************\n";
-Keith.Display();
-// rest of code here
-break;
-case 2:
-cout << "*******************************\n";
-cout << "NOTE: You can only add money that matches accounts Country Code \n";
-cout << "Enter amount of money to add:";
-int m;
-cin >> m;
-Keith.add(m);
-
-
-
-// rest of code here
-break;
-case 3:
-cout << "*******************************\n";
-cout << "NOTE: You can only sub money that matches accounts Country Code \n";
-
-//Keith.DumpList();
-
-cout << "Enter amount of money to sub:";
-
-cin >> m;
-Keith.sub(m);
-
-// rest of code here
-break;
-case 4:
-cout << "*******************************\n";
-
-cout << "Enter Country Code of the currency you want:";
-
-cin >> denom;
-Keith.ConvertingTime(denom);
-
-cout << "Conversion complete!\n";
-Keith.Display();
-
-break;
-
-case 5:
-cout << "End of Program.\n";
-Keith.SaveUser();
-gameOn = false;
-break;
-
-default:
-cout << "Not a Valid Choice. \n";
-cout << "Choose again.\n";
-cin >> choice;
-break;
-}
+		switch (choice)
+		{
+		case 1:
+		cout << "*******************************\n";
+		UserObject.Display();
+		// rest of code here
+		break;
+		case 2:
+		cout << "*******************************\n";
+		cout << "NOTE: You can only add money that matches accounts Country Code \n";
+		cout << "Enter amount of money to add:";
+		int m;
+		cin >> m;
+		UserObject.add(m);
+		
+		
+		
+		// rest of code here
+		break;
+		case 3:
+		cout << "*******************************\n";
+		cout << "NOTE: You can only sub money that matches accounts Country Code \n";
+		
+		//Keith.DumpList();
+		
+		cout << "Enter amount of money to sub:";
+		
+		cin >> m;
+		UserObject.sub(m);
+		
+		// rest of code here
+		break;
+		case 4:
+		cout << "*******************************\n";
+		
+		cout << "Enter Country Code of the currency you want:";
+		
+		cin >> denom;
+		UserObject.ConvertingTime(denom);
+		
+		cout << "Conversion complete!\n";
+		UserObject.Display();
+		
+		break;
+		
+		case 5:
+		cout << "End of Program.\n";
+		UserObject.SaveUser();
+		gameOn = false;
+		break;
+		
+		default:
+		cout << "Not a Valid Choice. \n";
+		cout << "Choose again.\n";
+		//cin >> choice;
+		cin.clear();
+		cin.ignore();
+		
+		break;
+		}
 
 }
 return 0;
